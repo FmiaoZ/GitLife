@@ -145,6 +145,30 @@ open index.html
 
 ---
 
+## 🧭 开发者指引（Where To Edit What）
+
+为方便协作，项目已按 clean architecture 分层。  
+如果你想改功能，可以按下面路径快速定位：
+
+- `index.html`
+  - 页面结构和样式
+  - 脚本加载顺序（domain → infrastructure → application → presentation）
+- `src/domain/domain.js`
+  - 业务静态数据（职业、物品、成就、地图分类等）
+  - 纯函数规则（等级计算、默认标签/技能/事件）
+- `src/infrastructure/infrastructure.js`
+  - 数据持久化（localStorage / Supabase）
+  - 资料序列化与存取（`save`, `loadLocal`, `profileToUser`）
+- `src/application/application.js`
+  - 全局状态与用例流程（注册、登录、登出、装备切换、事件创建）
+  - 业务动作协调（调用 domain 规则 + persistence + UI render）
+- `src/presentation/presentation.js`
+  - 视图渲染和交互绑定（modal、tab、render、keydown/click 事件）
+
+> 约定：优先在对应层修改；避免把业务规则直接写进 UI 渲染代码中。
+
+---
+
 <div align="center">
 
 Made with ⚔️ &nbsp;|&nbsp; MIT License &nbsp;|&nbsp; [开始你的冒险 →](https://fmiaoz.github.io/GitLife/)
