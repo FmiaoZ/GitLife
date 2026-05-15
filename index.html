@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LIFE RPG · 人生冒险</title>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link href="redesign-overlay.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 /* ===== VARIABLES ===== */
@@ -1050,21 +1051,21 @@ body::after {
 }
 </style>
 </head>
-<body>
+<body style="font-family: Arial; font-size: 20px">
 
 <!-- ==========================================
      START SCREEN
      ========================================== -->
 <div id="screen-start" class="screen active">
   <div class="start-avatar">⚔️</div>
-  <div class="game-logo">LIFE RPG</div>
+  <div class="game-logo" style="font-weight: 400; font-size: 80px; font-family: &quot;Times New Roman&quot;">LIFE RPG</div>
   <div class="game-tagline">把人生做成一场 RPG 冒险<br>每段经历都是一个关卡</div>
   <div class="start-divider"></div>
-  <button class="btn-start" id="btn-continue">▶ PRESS START</button>
+  <button class="btn-start" id="btn-continue" style="font-size: 25px">▶ PRESS START</button>
   <div class="auth-status" id="auth-status"></div>
   <div class="start-sub-links">
-    <span id="lnk-register">✦ 创建新角色</span>
-    <span id="lnk-demo">⚡ 体验 Demo</span>
+    <span id="lnk-register" style="font-size: 12px">✦ 创建新角色</span>
+    <span id="lnk-demo" style="font-size: 12px">⚡ 体验 Demo</span>
   </div>
 </div>
 
@@ -1480,5 +1481,6 @@ body::after {
 <script src="./src/infrastructure/infrastructure.js"></script>
 <script src="./src/application/application.js"></script>
 <script src="./src/presentation/presentation.js"></script>
+<script src="redesign-overlay.js"></script>
 </body>
 </html>

@@ -1,0 +1,220 @@
+/* ============================================================
+   GitLife Redesign Overlay
+   Apply D1 (refined pixel) + D3 (desktop cockpit) on top of
+   existing index.html — drop-in, no other code changes needed.
+   Load LAST so it wins specificity battles.
+   ============================================================ */
+
+/* === D1 · Refined pixel ===================================== */
+
+:root {
+  /* Calmer, slightly cooler base — keeps gold/navy soul but less muddy */
+  --bg:            #0b1829;
+  --bg2:           #0f1e30;
+  --bg3:           #13243a;
+  --panel:         #0f1e30;
+  --border:        #22405e;
+  --border-gold:   #ffd84d;
+  --border-dim:    #1a3050;
+  --gold:          #ffd84d;
+  --gold-bright:   #fff080;
+  --text:          #dde7f2;
+  --text-dim:      #6e8aaa;
+  --text-bright:   #ffffff;
+  --green:         #5fe39a;
+  --green-bright:  #8cffb8;
+  --blue:          #5da9ff;
+  --red:           #ff6b8a;
+  --purple:        #b07cff;
+  --yellow:        #ffe066;
+}
+
+/* Calmer scanlines (was 4% × 4px → 3% × 3px so less buzz) */
+body::after {
+  background: repeating-linear-gradient(
+    0deg, transparent, transparent 2px,
+    rgba(0,0,0,0.03) 2px, rgba(0,0,0,0.03) 3px
+  ) !important;
+}
+
+/* Tighten panel borders — was busy double-bordered look */
+.panel {
+  border-radius: 0;
+  background: var(--panel);
+  border-color: var(--border) !important;
+}
+
+/* Gold reserved for accent, not background tinting */
+.sec-header {
+  letter-spacing: 2px !important;
+  font-size: 10px !important;
+}
+
+/* Slightly larger numerics in VT323 wherever they appear */
+.exp-banner, .stat-val, .num, [data-numeric] {
+  font-family: 'VT323', monospace !important;
+  font-size: 22px !important;
+  letter-spacing: 1px;
+}
+
+/* Buttons: kill the gradient on hover, just brighten gold */
+.rpg-btn {
+  border-radius: 0 !important;
+  transition: all 0.15s ease !important;
+}
+.rpg-btn:hover {
+  border-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: 0 0 0 1px var(--gold), 0 0 12px rgba(255,216,77,0.25);
+}
+
+/* Bottom nav — calmer, indicator on top instead of busy bg */
+.bottom-nav {
+  background: var(--panel) !important;
+  border-top: 1px solid var(--border) !important;
+}
+.nav-btn {
+  border-top: 2px solid transparent !important;
+  transition: all 0.15s !important;
+}
+.nav-btn.active {
+  background: transparent !important;
+  border-top-color: var(--gold) !important;
+  color: var(--gold) !important;
+  box-shadow: none !important;
+}
+
+/* Quest map dots — more pixel-precise, less glow buildup */
+.qnode-dot {
+  border-radius: 0 !important;
+  width: 14px !important;
+  height: 14px !important;
+  transform: rotate(45deg);
+}
+.qnode-dot.cur {
+  box-shadow: 0 0 8px var(--gold), 0 0 16px rgba(255,216,77,0.4) !important;
+}
+
+/* === D3 · Desktop cockpit (≥1100px) ========================= */
+/* On wide screens the mobile app becomes a 3-column dashboard:
+   left: character + equipment, center: active tab, right: skills.
+   Bottom nav becomes top tab bar.                                 */
+
+@media (min-width: 1100px) {
+
+  body {
+    overflow-x: hidden !important;
+  }
+
+  /* Hide CRT scanlines slightly more on big screens */
+  body::after { opacity: 0.5; }
+
+  #screen-main.screen.active {
+    display: grid !important;
+    grid-template-rows: 56px 1fr;
+    grid-template-columns: 1fr;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px !important;
+    gap: 16px;
+    min-height: 100vh;
+  }
+
+  /* Topbar = top tab bar, full width */
+  .topbar {
+    grid-row: 1;
+    grid-column: 1;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    padding: 0 22px !important;
+    height: 56px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Move bottom nav into a horizontal top-bar style */
+  .bottom-nav {
+    position: static !important;
+    grid-row: 1;
+    grid-column: 1;
+    width: auto !important;
+    justify-self: end;
+    align-self: center;
+    border: none !important;
+    border-top: none !important;
+    display: inline-flex !important;
+    background: transparent !important;
+    padding: 0 22px 0 0 !important;
+    z-index: 10;
+  }
+  .bottom-nav .nav-btn {
+    flex-direction: row !important;
+    gap: 8px !important;
+    padding: 8px 14px !important;
+    border: 1px solid transparent !important;
+    border-radius: 0 !important;
+    font-size: 9px !important;
+    letter-spacing: 1.5px;
+  }
+  .bottom-nav .nav-btn.active {
+    border-color: var(--gold) !important;
+    background: rgba(255,216,77,0.08) !important;
+  }
+  .bottom-nav .nav-btn .ni { font-size: 14px !important; }
+
+  /* Main content area becomes a 3-col grid */
+  .main-content,
+  main,
+  #screen-main > .tabs-container,
+  #screen-main > div:not(.topbar):not(.bottom-nav):not(.modal-overlay) {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  /* Each tab when active: 3-column cockpit */
+  #tab-character.tab.active,
+  #tab-map.tab.active,
+  #tab-world.tab.active,
+  #tab-items.tab.active {
+    display: grid !important;
+    grid-template-columns: 320px 1fr 320px;
+    gap: 16px;
+    align-items: start;
+  }
+
+  /* All direct panels of any tab span full width by default */
+  .tab.active > .panel,
+  .tab.active > div {
+    grid-column: 1 / -1;
+  }
+
+  /* When tab has 3+ panels, distribute them across columns */
+  .tab.active > .panel:nth-of-type(1) { grid-column: 1; }
+  .tab.active > .panel:nth-of-type(2) { grid-column: 2; }
+  .tab.active > .panel:nth-of-type(3) { grid-column: 3; }
+  .tab.active > .panel:nth-of-type(n+4) { grid-column: 1 / -1; }
+
+  /* Map tab on desktop: full-width quest map */
+  #tab-map.tab.active {
+    grid-template-columns: 1fr !important;
+    max-width: 980px;
+    margin: 0 auto;
+  }
+
+  /* Larger type at desktop scale */
+  .map-hdr-title { font-size: 22px !important; }
+  .map-hdr-sub  { font-size: 11px !important; }
+
+  /* Modals stay centered (don't grid-ify them) */
+  .modal-overlay { grid-column: 1 / -1; }
+}
+
+/* Wider screens — let the cockpit breathe */
+@media (min-width: 1400px) {
+  #screen-main.screen.active { max-width: 1500px; }
+  #tab-character.tab.active,
+  #tab-world.tab.active,
+  #tab-items.tab.active {
+    grid-template-columns: 360px 1fr 360px;
+  }
+}
